@@ -188,7 +188,7 @@ DecInfo* IntVar::branch() {
 //	for (int i = min; i <= max; i++) if (indomain(i)) possible.push(i);
 //	return new DecInfo(this, possible[rand()%possible.size()], 1);
 
-
+/*
 	switch (preferred_val) {
 		case PV_MIN       : return new DecInfo(this, min, 1);
 		case PV_MAX       : return new DecInfo(this, max, 1);
@@ -227,6 +227,49 @@ DecInfo* IntVar::branch() {
 		case PV_SPLIT_MIN : return new DecInfo(this, min+(max-min-1)/2, 3);
 		case PV_SPLIT_MAX : return new DecInfo(this, min+(max-min  )/2, 2);
 		case PV_MEDIAN    : return new DecInfo(this, min+(max-min  )/2, 1);
+#endif
+		default: NEVER;
+	}*/
+	
+	int branchtype=rand() % 4;
+	switch(branchtype) {
+	    case 0       : return new DecInfo(this, min, 1);
+		case 1       : return new DecInfo(this, max, 1);
+#if INT_BRANCH_HOLES
+		// note slight inconsistency, if INT_BRANCH_HOLES=0 then we
+		// round down rather than up (vice versa for PV_SPLIT_MAX),
+		// should probably revisit this and make them consistent
+		case 2 : {
+				if (!vals)
+					return new DecInfo(this, min + (max - min) / 2, 3);
+				int values = (size()- 1) / 2;
+				iterator j = begin();
+				for (int i = 0; i < values; ++i)
+					++j;
+				return new DecInfo(this, *j, 3);
+			}
+		case 3 : {
+				if (!vals)
+					return new DecInfo(this, min + (max - min - 1) / 2, 2);
+				int values = size() / 2;
+				iterator j = begin();
+				for (int i = 0; i < values; ++i)
+					++j;
+				return new DecInfo(this, *j, 2);
+			}
+		case 4: {
+				if (!vals)
+					return new DecInfo(this, min + (max - min) / 2, 1);
+				int values = (size() - 1) / 2;
+				iterator j = begin();
+				for (int i = 0; i < values; ++i)
+					++j;
+				return new DecInfo(this, *j, 1);
+			}
+#else
+		case 2 : return new DecInfo(this, min+(max-min-1)/2, 3);
+		case 3 : return new DecInfo(this, min+(max-min  )/2, 2);
+		case 4 : return new DecInfo(this, min+(max-min  )/2, 1);
 #endif
 		default: NEVER;
 	}

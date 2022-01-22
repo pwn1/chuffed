@@ -25,8 +25,14 @@ public:
         void setSign(bool sign) { s = sign; }
 
 	void setPreferredVal(PreferredVal p) {
-		if (p == PV_MIN || p == PV_SPLIT_MIN) sat.polarity[v] = s^1;
-		if (p == PV_MAX || p == PV_SPLIT_MAX) sat.polarity[v] = s;
+		//if (p == PV_MIN || p == PV_SPLIT_MIN) sat.polarity[v] = s^1;
+		//if (p == PV_MAX || p == PV_SPLIT_MAX) sat.polarity[v] = s;
+		if(rand()%2==0) {
+		    sat.polarity[v] = s^1;
+		}
+		else {
+		    sat.polarity[v] = s;
+		}
 	}
 
 	void attach(Propagator *p, int pos, int eflags);

@@ -31,12 +31,20 @@ IntVarLL::IntVarLL(const IntVar& other) : IntVar(other), ld(2), li(0), hi(1) {
 }
 
 DecInfo* IntVarLL::branch() {
-	switch (preferred_val) {
+	/*switch (preferred_val) {
 		case PV_MIN: return new DecInfo(this, min, 3);
 		case PV_MAX: return new DecInfo(this, max-1, 2);
 		case PV_SPLIT_MIN: return new DecInfo(this, min+(max-min-1)/2, 3);
 		case PV_SPLIT_MAX: return new DecInfo(this, min+(max-min  )/2, 2);
 		default: NEVER;
+	}*/
+	int branchtype=rand() % 4;
+	switch(branchtype) {
+	    case 0: return new DecInfo(this, min, 3);
+	    case 1: return new DecInfo(this, max-1, 2);
+	    case 2: return new DecInfo(this, min+(max-min-1)/2, 3);
+	    case 3: return new DecInfo(this, min+(max-min  )/2, 2);
+	    default: NEVER;
 	}
 }
 
