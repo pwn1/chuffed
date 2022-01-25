@@ -38,12 +38,11 @@ DecInfo* IntVarLL::branch() {
 		case PV_SPLIT_MAX: return new DecInfo(this, min+(max-min  )/2, 2);
 		default: NEVER;
 	}*/
-	int branchtype=rand() % 4;
+	//  Just branch at random for the lower or upper half of the domain. 
+	int branchtype=rand() % 2;
 	switch(branchtype) {
-	    case 0: return new DecInfo(this, min, 3);
-	    case 1: return new DecInfo(this, max-1, 2);
-	    case 2: return new DecInfo(this, min+(max-min-1)/2, 3);
-	    case 3: return new DecInfo(this, min+(max-min  )/2, 2);
+	    case 0: return new DecInfo(this, min+(max-min-1)/2, 3);
+	    case 1: return new DecInfo(this, min+(max-min  )/2, 2);
 	    default: NEVER;
 	}
 }

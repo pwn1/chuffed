@@ -231,15 +231,14 @@ DecInfo* IntVar::branch() {
 		default: NEVER;
 	}*/
 	
-	int branchtype=rand() % 4;
+	//  Branch for lower or upper half of domain. 
+	int branchtype=rand() % 2;
 	switch(branchtype) {
-	    case 0       : return new DecInfo(this, min, 1);
-		case 1       : return new DecInfo(this, max, 1);
 #if INT_BRANCH_HOLES
 		// note slight inconsistency, if INT_BRANCH_HOLES=0 then we
 		// round down rather than up (vice versa for PV_SPLIT_MAX),
 		// should probably revisit this and make them consistent
-		case 2 : {
+		case 0 : {
 				if (!vals)
 					return new DecInfo(this, min + (max - min) / 2, 3);
 				int values = (size()- 1) / 2;
@@ -248,7 +247,7 @@ DecInfo* IntVar::branch() {
 					++j;
 				return new DecInfo(this, *j, 3);
 			}
-		case 3 : {
+		case 1 : {
 				if (!vals)
 					return new DecInfo(this, min + (max - min - 1) / 2, 2);
 				int values = size() / 2;
@@ -257,19 +256,9 @@ DecInfo* IntVar::branch() {
 					++j;
 				return new DecInfo(this, *j, 2);
 			}
-		case 4: {
-				if (!vals)
-					return new DecInfo(this, min + (max - min) / 2, 1);
-				int values = (size() - 1) / 2;
-				iterator j = begin();
-				for (int i = 0; i < values; ++i)
-					++j;
-				return new DecInfo(this, *j, 1);
-			}
 #else
-		case 2 : return new DecInfo(this, min+(max-min-1)/2, 3);
-		case 3 : return new DecInfo(this, min+(max-min  )/2, 2);
-		case 4 : return new DecInfo(this, min+(max-min  )/2, 1);
+		case 0 : return new DecInfo(this, min+(max-min-1)/2, 3);
+		case 1 : return new DecInfo(this, min+(max-min  )/2, 2);
 #endif
 		default: NEVER;
 	}
